@@ -5,7 +5,7 @@
 trigger:
 - master
 - develop
-- feature*
+- feature/*
 
 resources:
 - repo: self
