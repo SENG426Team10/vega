@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  venus-mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_DATABASE=venus
+      - MYSQL_USER=venus
+      - MYSQL_PASSWORD=venus
+    ports:
+      - 3306:3306
+  backend-api: 
+    build:
+      context: ./vega-spring-master
+      dockerfile: ./Dockerfile
+    image: "venus/beeple"
+    ports:
+      - "8080:8080"
+  backend-web:
+    build:
+      context: ./vega-web-master/server
+      dockerfile: ./Dockerfile
+    image: "venus/quantum"
+    ports:
+      - "8000:8000"
+  frontend:
+    build:
+      context: ./vega-web-master
+      dockerfile: ./Dockerfile
+    image: "venus/theswitch"
+    ports:
+      - "3000:3000"
+    links:
+      - "backend-web:be"
