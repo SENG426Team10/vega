@@ -30,6 +30,8 @@ services:
       context: ./vega-web-master
       dockerfile: ./Dockerfile
     image: "venus/theswitch"
+    volumes:
+      - ./vega-web-master:/app
     ports:
       - "3000:3000"
     links:
