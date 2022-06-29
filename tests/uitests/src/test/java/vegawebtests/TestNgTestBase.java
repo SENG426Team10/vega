@@ -2,8 +2,8 @@ package vegawebtests;
 import java.util.concurrent.TimeUnit;
 import java.io.*;
 import org.openqa.selenium.WebDriver;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
 
 //import ru.stqa.selenium.factory.WebDriverFactory;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,7 +19,7 @@ public class TestNgTestBase {
   protected String gridHubUrl;
   protected String baseUrl;
 
-  @BeforeClass
+  @BeforeSuite
   public void init() throws IOException {
     baseUrl = PropertyLoader.loadProperty("site.url");
     gridHubUrl = PropertyLoader.loadProperty("grid2.hub");
@@ -27,7 +27,7 @@ public class TestNgTestBase {
     //Capabilities capabilities = PropertyLoader.loadCapabilities();
 
     //driver = WebDriverFactory.getDriver(baseUrl);
-    System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+    System.setProperty("webdriver.chrome.driver", "C:\\webdrivers\\chromedriver.exe");
     driver = new ChromeDriver();
 
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -38,6 +38,6 @@ public class TestNgTestBase {
     if(driver!=null){
       driver.close();
       driver.quit();
-  }
+    }
   }
 }
