@@ -24,8 +24,6 @@ services:
     #    - "SPRING_PROFILES_ACTIVE=prod"
     depends_on:
       - "venus-mysql"
-      - "backend-web"
-      - "frontend"
 
   backend-web:
     build:
