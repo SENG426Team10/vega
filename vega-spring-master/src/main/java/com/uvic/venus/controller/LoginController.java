@@ -80,6 +80,7 @@ public class LoginController {
 
     @RequestMapping(value="/register", method = RequestMethod.POST)
     public ResponseEntity<?> registerUser(@RequestBody RegisterUserInfo user) throws Exception{
+        System.out.println("Entered into registerUser");
         JdbcUserDetailsManager dataManager = new JdbcUserDetailsManager(dataSource);
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
