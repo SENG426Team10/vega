@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  backend:
+  backend-web:
     build:
       context: ./server
       dockerfile: ./Dockerfile
@@ -16,4 +16,4 @@ services:
     ports:
       - "3000:3000"
     links:
-      - "backend:be"
+      - "backend-web:be"
