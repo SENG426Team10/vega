@@ -1,7 +1,8 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Row, Col, Table, Button, Form, Modal } from 'react-bootstrap';
 import SimplePageLayout from '../templates/SimplePageLayout.js';
 import { UserContext } from '../../auth/UserProvider.js';
+import { fetchAllSecrets } from '../../service/Vault/Vault.js';
 
 const Vault = (props) => {
 	const { user, setUserInfo, logout } = useContext(UserContext);
@@ -9,6 +10,15 @@ const Vault = (props) => {
 	const [name, setName] = useState('');
 	const [secret, setSecret] = useState(null);
 	const [listOfSecrets, setSecrets] = useState([]);
+	useEffect(() => {
+		console.log("Inside useEffect")
+		fetchAllSecrets(user.jwt)
+			.then(resp => {
+				setSecrets(resp)
+			});
+
+
+	}, [user]);
 
 	const addSecret = (name_, secret_) => {
 		setSecrets(prevList => [...prevList, {
@@ -94,7 +104,8 @@ const Vault = (props) => {
 
 	const listOfSecretsHTML = () => {
 		if (listOfSecrets.length) {
-			return listOfSecrets.map((record) => <tr><td>{record.name}</td><td>{record.date}</td><td>{record.secret}</td><td>{shareButton}</td><td>{updateButton}</td><td>{deleteButton}</td></tr>)
+			console.log(listOfSecrets);
+			return listOfSecrets.map((record) => <tr><td>{record.username}</td><td>{record.secretName}</td><td>{record.createdDate}</td><td>{record.secretData}</td><td>{shareButton}</td><td>{updateButton}</td><td>{deleteButton}</td></tr>);
 		}
     }
 
@@ -109,6 +120,7 @@ const Vault = (props) => {
 				<Table>
 					<thead>
 						<tr>
+							<td>Owner</td>
 							<td>Name</td>
 							<td>Created</td>
 							<td>Secret</td>
