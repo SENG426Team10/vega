@@ -21,8 +21,7 @@ public class SecretInfo {
     private String secretdata;
 
 
-    public SecretInfo(Long id, String username, String secretName, String createdDate, String secretData) {
-        this.id = id;
+    public SecretInfo(String username, String secretName, String createdDate, String secretData) {
         this.username = username;
         this.secretname = secretName;
         this.createddate = createdDate;

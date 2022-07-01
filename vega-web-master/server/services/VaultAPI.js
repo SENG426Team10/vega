@@ -1,4 +1,4 @@
-import { doPostFile, doGet } from './HTTPRequestAPI.js';
+import { doPost, doGet } from './HTTPRequestAPI.js';
 
 export function fetchAllSecrets(url, headers) {
 	console.log(headers);
@@ -9,4 +9,8 @@ export function fetchUserSecrets(url, headers) {
 	console.log(headers);
 	console.log(url);
 	return doGet(url, headers['authorization'])
+}
+
+export function uploadSecret(url, data) {
+	return doPost(url, data)
 }
