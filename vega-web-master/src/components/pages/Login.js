@@ -25,12 +25,13 @@ const Login = (props) => {
 			login(userInfo)
 				.then(res => {
 					console.log("Response", res);
-					if (res.ok) { 
+					if (res.jwt) { 
 						console.log(res.jwt);
 						var role = res.authorities[0].authority;
 						setUserInfo(userInfo.username, res.jwt, role)
 						setAuth(true);
 					} else {
+						console.log("Invalid Login");
 						giveFeedback("Invalid login, please try again.");
 					}
 				})
@@ -38,7 +39,7 @@ const Login = (props) => {
 			signup(userInfo)
 				.then(res => {
 					console.log("Response", res);
-					giveFeedback(res);
+					giveFeedback((res&&res.code)?"Username Already In Use":res);
 				})
 		}
 	}
@@ -51,7 +52,7 @@ const Login = (props) => {
 	if(!auth){
 		return (
 			<UserRegistrationPageLayout>
-				<p>{feedbackMessage}</p>
+				<p className='feedback-msg'>{feedbackMessage}</p>
 				<h1>{(mode=="login")?"Login":"Sign Up"}</h1>
 				<LoginUser 
 					onSubmit={onSubmit} 

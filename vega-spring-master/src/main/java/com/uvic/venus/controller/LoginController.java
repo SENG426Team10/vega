@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,23 +83,29 @@ public class LoginController {
     public ResponseEntity<?> registerUser(@RequestBody RegisterUserInfo user) throws Exception{
         System.out.println("Entered into registerUser");
         JdbcUserDetailsManager dataManager = new JdbcUserDetailsManager(dataSource);
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        
+        try {
+            dataManager.loadUserByUsername(user.getUsername());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username Already In Use");
+        } catch (UsernameNotFoundException  e) {
+            List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        //User user1 = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()), authorities);
-        User.UserBuilder builder = User.builder();
-        builder.disabled(true);
-        builder.passwordEncoder(passwordEncoder::encode);
-        builder.password(user.getPassword());
-        builder.username(user.getUsername());
-        builder.authorities(authorities);
-        dataManager.createUser(builder.build());
+            //User user1 = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()), authorities);
+            User.UserBuilder builder = User.builder();
+            builder.disabled(true);
+            builder.passwordEncoder(passwordEncoder::encode);
+            builder.password(user.getPassword());
+            builder.username(user.getUsername());
+            builder.authorities(authorities);
+            dataManager.createUser(builder.build());
 
-        UserInfo userinfo = new UserInfo(user.getUsername(), user.getFirstname(), user.getLastname());
-        System.out.println(userinfo);
-        userInfoDAO.save(userinfo);
+            UserInfo userinfo = new UserInfo(user.getUsername(), user.getFirstname(), user.getLastname());
+            System.out.println(userinfo);
+            userInfoDAO.save(userinfo);
 
-        return ResponseEntity.ok("User Created Successfully");
+            return ResponseEntity.ok("User Created Successfully");
+        }
     }
 
 
