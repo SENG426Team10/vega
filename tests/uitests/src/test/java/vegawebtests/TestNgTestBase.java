@@ -7,6 +7,7 @@ import org.testng.annotations.AfterSuite;
 
 //import ru.stqa.selenium.factory.WebDriverFactory;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import vegawebtests.util.PropertyLoader;
 
@@ -22,13 +23,14 @@ public class TestNgTestBase {
   @BeforeSuite
   public void init() throws IOException {
     baseUrl = PropertyLoader.loadProperty("site.url");
-    gridHubUrl = PropertyLoader.loadProperty("grid2.hub");
 
     //Capabilities capabilities = PropertyLoader.loadCapabilities();
 
     //driver = WebDriverFactory.getDriver(baseUrl);
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--start-maximized");
     System.setProperty("webdriver.chrome.driver", "C:\\webdrivers\\chromedriver.exe");
-    driver = new ChromeDriver();
+    driver = new ChromeDriver(options);
 
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }

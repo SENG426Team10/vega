@@ -1,40 +1,104 @@
 package vegawebtests;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import java.lang.String;
 
 import javax.xml.xpath.XPath;
 
-import vegawebtests.pages.HomePage;
+import vegawebtests.pages.LoginPage;
+import vegawebtests.pages.LogoutPage;
+import vegawebtests.pages.AdminPage;
+import vegawebtests.util.User;
 import vegawebtests.TestNgTestBase;
 
 public class AccountCreationTest extends TestNgTestBase {
 
-  private HomePage homepage;
+  private LoginPage loginpage;
+  private LogoutPage logoutpage;
+  private AdminPage adminpanel;
+  private JavascriptExecutor js;
+  private final String adminUsername = "admin@venus.com";
+  private final String adminPass = "pass";
+  private final String dummyUsername = "example@fake.com";
+  private final String dummyPass = "pass";
 
   @BeforeClass
-  public void testInit() {
-    //driver.get(baseUrl);
+  public void classInit() {
+    js = (JavascriptExecutor) driver;
+    loginpage = PageFactory.initElements(driver, LoginPage.class);
+    logoutpage = PageFactory.initElements(driver, LogoutPage.class);
+    adminpanel = PageFactory.initElements(driver, AdminPage.class);
+  }
 
-    driver.navigate().to("http://localhost:3000");
-    homepage = PageFactory.initElements(driver, HomePage.class);
+  @BeforeMethod
+  public void testInit() {
+    driver.get(String.format("%s/login", baseUrl));
+  }
+
+  @AfterMethod
+  public void testCleanup() {
+    // Logout
+    js.executeScript("window.localStorage.clear();");
   }
 
   @Test
-  public void testNavBarHasAllLinks() {
+  public void testValidAccountCreationSubmit() {
+    loginpage.switchMode();
 
-    Assert.assertTrue("Platform".equals(homepage.allLinks.get(0).getText()));
-
-    Assert.assertTrue("News & Events".equals(homepage.allLinks.get(1).getText()));
-
-    Assert.assertTrue("Leadership".equals(homepage.allLinks.get(2).getText()));
-
-    Assert.assertTrue("About us".equals(homepage.allLinks.get(3).getText()));
-
-    Assert.assertTrue("Contact us".equals(homepage.allLinks.get(4).getText()));
+    loginpage.createAccount(dummyUsername, "First", "Last", dummyPass);
     
+    new WebDriverWait(driver, 10).until(ExpectedConditions.textToBePresentInElement(loginpage.feedbackElement, "User Created Successfully"));
+
+    Assert.assertEquals(loginpage.feedbackElement.getText(), "User Created Successfully");
+  }
+
+  @Test
+  public void testInvalidAccountCreationSubmit() {
+    loginpage.switchMode();
+
+    loginpage.createAccount(adminUsername, "First", "Last", adminPass);
+
+    new WebDriverWait(driver, 10).until(ExpectedConditions.textToBePresentInElement(loginpage.feedbackElement, "Username Already In Use"));
+
+    Assert.assertEquals(loginpage.feedbackElement.getText(), "Username Already In Use");
+  }
+
+  @Test(dependsOnMethods = {"testValidAccountCreationSubmit"})
+  public void testLoginToUnactivatedAccount() {
+    loginpage.login(dummyUsername, dummyPass);
+    
+    new WebDriverWait(driver, 10).until(ExpectedConditions.textToBePresentInElement(loginpage.feedbackElement, "Invalid login, please try again."));
+
+    Assert.assertEquals(loginpage.feedbackElement.getText(), "Invalid login, please try again.");
+  }
+
+  @Test(dependsOnMethods = {"testLoginToUnactivatedAccount"})
+  public void testActivateAccount() {
+    loginpage.login(adminUsername, adminPass);
+
+    loginpage.clickLink("Admin"); 
+
+    new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//table/tbody/tr[1]/td[4]/a"))));
+
+    User dummy = adminpanel.getUser(dummyUsername);
+    dummy.enableUser(driver);
+
+    loginpage.clickLink("Logout"); 
+
+    new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(logoutpage.signoutElement));
+    logoutpage.signoutElement.click();
+
+    loginpage.clickLink("Login/SignUp");
+
+    loginpage.login(dummyUsername, dummyPass);
   }
 }
