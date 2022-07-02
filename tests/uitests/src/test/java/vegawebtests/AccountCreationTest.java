@@ -1,7 +1,6 @@
 package vegawebtests;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,6 +16,7 @@ import javax.xml.xpath.XPath;
 import vegawebtests.pages.LoginPage;
 import vegawebtests.pages.LogoutPage;
 import vegawebtests.pages.AdminPage;
+import vegawebtests.util.AccountHelper;
 import vegawebtests.util.User;
 import vegawebtests.TestNgTestBase;
 
@@ -25,7 +25,7 @@ public class AccountCreationTest extends TestNgTestBase {
   private LoginPage loginpage;
   private LogoutPage logoutpage;
   private AdminPage adminpanel;
-  private JavascriptExecutor js;
+  private AccountHelper accountHelper;
   private final String adminUsername = "admin@venus.com";
   private final String adminPass = "pass";
   private final String dummyUsername = "example@fake.com";
@@ -33,7 +33,7 @@ public class AccountCreationTest extends TestNgTestBase {
 
   @BeforeClass
   public void classInit() {
-    js = (JavascriptExecutor) driver;
+    accountHelper = new AccountHelper(driver, baseUrl);
     loginpage = PageFactory.initElements(driver, LoginPage.class);
     logoutpage = PageFactory.initElements(driver, LogoutPage.class);
     adminpanel = PageFactory.initElements(driver, AdminPage.class);
@@ -46,8 +46,7 @@ public class AccountCreationTest extends TestNgTestBase {
 
   @AfterMethod
   public void testCleanup() {
-    // Logout
-    js.executeScript("window.localStorage.clear();");
+    accountHelper.logout();
   }
 
   @Test

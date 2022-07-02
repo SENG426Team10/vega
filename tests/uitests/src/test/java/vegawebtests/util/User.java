@@ -2,6 +2,7 @@ package vegawebtests.util;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.By;
@@ -30,6 +31,9 @@ public class User {
         user.findElement(By.xpath("./td[4]/a")).click();
     }
 
+    // Possible values STAFF or USER
     public void changeRole(String role, WebDriver driver){
+        Select roleSelect = new Select(user.findElement(By.xpath("./td[5]/select")));
+        roleSelect.selectByValue(String.format("ROLE_%s", role));
     }
 }
