@@ -99,5 +99,7 @@ public class AccountCreationTest extends TestNgTestBase {
     loginpage.clickLink("Login/SignUp");
 
     loginpage.login(dummyUsername, dummyPass);
+
+    Assert.assertEquals(accountHelper.getRole(), "ROLE_USER");
   }
 }
