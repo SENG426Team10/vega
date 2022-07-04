@@ -19,8 +19,6 @@ public class ResourcesTest extends TestNgTestBase{
     private final String adminPass = "pass";
     private final String staffUsername = "jonoliver@venus.com";
     private final String staffPass = "pass";
-    private final String userUsername = "testuser@venus.com";
-    private final String userPass = "pass";
     private final String testFile = "test.txt";
     
     @BeforeClass
@@ -54,6 +52,13 @@ public class ResourcesTest extends TestNgTestBase{
     public void testStaffCanAccessResources() {
         accountHelper.login(staffUsername, staffPass);
         Assert.assertEquals(accountHelper.getRole(), "ROLE_STAFF");
+        Assert.assertEquals(resourcesPage.allLinks.get(3).getText(), "Resources");
+    }
+
+    @Test
+    public void testAdminCanAccessResources() {
+        accountHelper.login(adminUsername, adminPass);
+        Assert.assertEquals(accountHelper.getRole(), "ROLE_ADMIN");
         Assert.assertEquals(resourcesPage.allLinks.get(3).getText(), "Resources");
     }
 }
