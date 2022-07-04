@@ -1,10 +1,6 @@
 package vegawebtests;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -12,14 +8,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import java.lang.String;
 
-import javax.xml.xpath.XPath;
-
-import vegawebtests.pages.LoginPage;
-import vegawebtests.pages.LogoutPage;
 import vegawebtests.pages.AdminPage;
 import vegawebtests.util.AccountHelper;
 import vegawebtests.util.User;
-import vegawebtests.TestNgTestBase;
 
 public class RoleSwitchTest extends TestNgTestBase{
 
