@@ -48,8 +48,9 @@ public class VaultController {
         return ResponseEntity.ok(secretInfoList);
     }
 
-    @RequestMapping(value = "/uploadsecret", method = RequestMethod.POST)
+    @PostMapping(value = "/uploadsecret")
     public ResponseEntity<?> uploadSecret(@RequestBody SecretInfo secret){
+        console.log("in upload secret");
         secretInfoDAO.save(secret);
         return ResponseEntity.ok("Secret Saved Successfully");
     }

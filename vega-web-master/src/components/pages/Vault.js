@@ -27,7 +27,7 @@ const Vault = (props) => {
 			"createddate": new Date().toLocaleDateString(),
 			"secretdata": secret_
 		};
-		uploadSecret(secretInfo);
+		uploadSecret(secretInfo, user.jwt);
 
 		console.log("Added " + name_ + ":" + secret_);
 	}
