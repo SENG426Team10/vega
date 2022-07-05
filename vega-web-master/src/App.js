@@ -14,6 +14,7 @@ import AdminPanel from './components/pages/AdminPanel.js';
 import Leadership from './components/pages/Leadership.js';
 import UserRegistration from './components/pages/UserRegistration.js';
 import vault from './components/pages/Vault.js';
+import AboutUs from './components/pages/AboutUs.js';
 import {UserProvider} from './auth/UserProvider.js';
 import {UserContext} from './auth/UserProvider.js';
 
