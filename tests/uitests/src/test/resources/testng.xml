@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Tests" verbose="5">
+  <!-- <test name="Sample Test">
+    <classes>
+      <class name="vegawebtests.SampleTestNgTest"/>
+    </classes>
+  </test> -->
+  <test name="Accounts">
+    <classes>
+      <class name="vegawebtests.AccountCreationTest"/>
+    </classes>
+  </test>
+  <test name="AdminPanel">
+    <classes>
+      <class name="vegawebtests.RoleSwitchTest"/>
+    </classes>
+  </test>
+  <test name="ResourcesPage">
+    <classes>
+      <class name="vegawebtests.ResourcesTest"/>
+    </classes>
+  </test>
+</suite>

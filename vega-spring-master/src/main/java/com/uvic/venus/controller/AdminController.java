@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,6 +59,7 @@ public class AdminController {
         builder.disabled(!enable);
 
         manager.updateUser(builder.build());
+        System.out.println(String.format("Enabled User: %s", userDetails.getUsername()));
         return ResponseEntity.ok("User Updated Successfully");
     }
 
@@ -74,9 +75,10 @@ public class AdminController {
         builder.username(userDetails.getUsername());
         builder.password(userDetails.getPassword());
         builder.authorities(authorities);
-        builder.disabled(userDetails.isEnabled());
+        builder.disabled(!userDetails.isEnabled());
 
         manager.updateUser(builder.build());
+        System.out.println(String.format("Changed user (%s) role to: %s", userDetails.getUsername(), role));
         return ResponseEntity.ok("User Updated Successfully");
     }
 

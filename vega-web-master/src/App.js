@@ -13,6 +13,7 @@ import Resources from './components/pages/Resources.js';
 import AdminPanel from './components/pages/AdminPanel.js';
 import Leadership from './components/pages/Leadership.js';
 import UserRegistration from './components/pages/UserRegistration.js';
+import vault from './components/pages/Vault.js';
 import {UserProvider} from './auth/UserProvider.js';
 import {UserContext} from './auth/UserProvider.js';
 
@@ -24,7 +25,7 @@ function App() {
   const {user, setUserInfo, logout} = useContext(UserContext);
 
   return (
-   <UserProvider value ={user, setUserInfo, logout}> 
+   <UserProvider value ={{user, setUserInfo, logout}}> 
         <Switch>
         	<Route path="/" component={HomePageLayout} exact />
         	<Route path="/contactus" component={UserRegistration} exact />
@@ -35,6 +36,8 @@ function App() {
           <Route path="/account" component={UserAccount} />
           <Route path="/resources" component={Resources} />
           <Route path="/adminpanel" component={AdminPanel} />
+              <Route path="/aboutus" component={AboutUs} />
+              <Route path="/vault" component={vault} />
         </Switch>
     </UserProvider>
   );
