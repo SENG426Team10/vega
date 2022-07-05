@@ -35,6 +35,7 @@ function App() {
           <Route path="/account" component={UserAccount} />
           <Route path="/resources" component={Resources} />
           <Route path="/adminpanel" component={AdminPanel} />
+          <Route path="/aboutus" component={AboutUs} />
         </Switch>
     </UserProvider>
   );
