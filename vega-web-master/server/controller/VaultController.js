@@ -3,7 +3,7 @@ import { fetchAllSecrets, fetchUserSecrets, uploadSecret } from '../services/Vau
 
 let router = express();
 
-router.use(bodyParser.json({ 'limit': '20mb' }));
+// router.use(bodyParser.json({ 'limit': '20mb' }));
 
 router.get("/getallsecrets", (req, res) => {
 	console.log("Entered get all secrets");
