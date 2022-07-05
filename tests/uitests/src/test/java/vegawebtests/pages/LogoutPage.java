@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class LogoutPage extends Page {
         
-    @FindBy(xpath = "//button[text()='signout']")
+    @FindBy(xpath = "//button[text()='Logout']")
     public WebElement signoutElement;
 
     public LogoutPage(WebDriver webDriver) {

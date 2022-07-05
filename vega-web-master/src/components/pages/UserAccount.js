@@ -19,9 +19,9 @@ const UserAccount = (props) => {
 		<SimplePageLayout>
 			<Row>
 				<Col sm={6}>
-					<p>Hello,</p>
-					<p>{user.username}</p>
-					<Button onClick={logoutAndRouteChange} size="sm">signout</Button>
+					<p>Hello, {user.username}</p>
+					<p>Press the button below to Logout.</p>
+					<Button onClick={logoutAndRouteChange} size="sm">Logout</Button>
 				</Col>
 			</Row>
 		</SimplePageLayout>
