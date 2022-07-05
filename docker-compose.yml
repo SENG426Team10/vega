@@ -12,10 +12,13 @@ services:
     ports:
       - 3306:3306
   backend-api: 
+    restart: on-failure:5
     build:
       context: ./vega-spring-master
       dockerfile: ./Dockerfile
     image: "venus/beeple"
+    volumes:
+      - ./vega-spring-master:/workspace/app
     ports:
       - "8080:8080"
   backend-web:
@@ -23,6 +26,8 @@ services:
       context: ./vega-web-master/server
       dockerfile: ./Dockerfile
     image: "venus/quantum"
+    volumes:
+      - ./vega-web-master/server:/app
     ports:
       - "8000:8000"
   frontend:
