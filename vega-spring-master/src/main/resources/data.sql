@@ -37,3 +37,8 @@ INSERT INTO userinfo (username, firstname, lastname) values
     ('brijeshgupta@venus.com', 'Brijesh', 'Gupta'),
     ('amyfofana@venus.com', 'Amy', 'Fofana'),
     ('testuser@venus.com', 'testuser', 'testuser');
+
+INSERT INTO secrets (username, secretname, createddate, secretdata) values
+    ('admin@venus.com', 'secret1', '01/01/1999', 'test1'),
+    ('admin@venus.com', 'secret2', '01/01/1999', 'test2'),
+    ('admin@venus.com', 'secret3', '01/01/1999', 'test3');
