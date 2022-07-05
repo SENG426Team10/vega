@@ -1,5 +1,6 @@
 import SimplePageLayout from '../templates/SimplePageLayout.js';
 
+
 const AboutUs = (props) => {
     return (
         <SimplePageLayout>

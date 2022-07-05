@@ -24,7 +24,7 @@ function App() {
   const {user, setUserInfo, logout} = useContext(UserContext);
 
   return (
-   <UserProvider value ={user, setUserInfo, logout}> 
+   <UserProvider value ={{user, setUserInfo, logout}}> 
         <Switch>
         	<Route path="/" component={HomePageLayout} exact />
         	<Route path="/contactus" component={UserRegistration} exact />
@@ -35,6 +35,7 @@ function App() {
           <Route path="/account" component={UserAccount} />
           <Route path="/resources" component={Resources} />
           <Route path="/adminpanel" component={AdminPanel} />
+          <Route path="/aboutus" component={AboutUs} />
         </Switch>
     </UserProvider>
   );
