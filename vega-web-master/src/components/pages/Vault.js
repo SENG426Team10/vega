@@ -10,24 +10,50 @@ const Vault = (props) => {
 	const [name, setName] = useState('');
 	const [secret, setSecret] = useState(null);
 	const [listOfSecrets, setSecrets] = useState([]);
+	const [isNewData, setNewDataFlag] = useState(false);
+
+	// For now-defunct database integration
+	//useEffect(() => {
+	//	console.log("Inside useEffect")
+	//	fetchAllSecrets(user.jwt)
+	//		.then(resp => {
+	//			setSecrets(resp)
+	//		});
+
+
+	//}, [user]);
+
 	useEffect(() => {
-		console.log("Inside useEffect")
-		fetchAllSecrets(user.jwt)
-			.then(resp => {
-				setSecrets(resp)
-			});
+		if (isNewData) {
+			const json = JSON.stringify(listOfSecrets);
+			window.localStorage.setItem("listofSecrets", json);
+			setNewDataFlag(false);
+        }
+		
+	}, [isNewData]);
 
-
-	}, [user]);
+	useEffect(() => {
+		const json = window.localStorage.getItem("listofSecrets");
+		const savedSecrets = JSON.parse(json);
+		if (savedSecrets) {
+			setSecrets(savedSecrets);
+		}
+	}, []);
 
 	const addSecret = (name_, secret_) => {
 		const secretInfo = {
-			"username": user.username,
-			"secretname": name_,
-			"createddate": new Date().toLocaleDateString(),
-			"secretdata": secret_
+			username: user.username,
+			secretName: name_,
+			createdDate: new Date().toLocaleDateString(),
+			secretData: secret_
 		};
-		uploadSecret(secretInfo, user.jwt);
+
+		// For now-defunct database integration
+		// uploadSecret(secretInfo, user.jwt);
+
+		setSecrets(prevList => {
+			return [...prevList, secretInfo]
+		});
 
 		console.log("Added " + name_ + ":" + secret_);
 	}
@@ -46,7 +72,10 @@ const Vault = (props) => {
 			event.preventDefault();
 
 			addSecret(name, secret);
-			setShow(false)
+			setNewDataFlag(true);
+			setName("");
+			setSecret("");
+			setShow(false);
         }
 
 		return (
