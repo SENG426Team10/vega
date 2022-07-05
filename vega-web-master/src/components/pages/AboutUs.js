@@ -11,3 +11,5 @@ const AboutUs = (props) => {
         </SimplePageLayout>
     );
 }
+
+export default AboutUs
