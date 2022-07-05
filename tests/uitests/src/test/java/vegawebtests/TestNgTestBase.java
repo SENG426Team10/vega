@@ -2,11 +2,12 @@ package vegawebtests;
 import java.util.concurrent.TimeUnit;
 import java.io.*;
 import org.openqa.selenium.WebDriver;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
 
 //import ru.stqa.selenium.factory.WebDriverFactory;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import vegawebtests.util.PropertyLoader;
 
@@ -19,16 +20,17 @@ public class TestNgTestBase {
   protected String gridHubUrl;
   protected String baseUrl;
 
-  @BeforeClass
+  @BeforeSuite
   public void init() throws IOException {
     baseUrl = PropertyLoader.loadProperty("site.url");
-    gridHubUrl = PropertyLoader.loadProperty("grid2.hub");
 
     //Capabilities capabilities = PropertyLoader.loadCapabilities();
 
     //driver = WebDriverFactory.getDriver(baseUrl);
-    System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
-    driver = new ChromeDriver();
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--start-maximized");
+    System.setProperty("webdriver.chrome.driver", "C:\\webdrivers\\chromedriver.exe");
+    driver = new ChromeDriver(options);
 
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
@@ -38,6 +40,6 @@ public class TestNgTestBase {
     if(driver!=null){
       driver.close();
       driver.quit();
-  }
+    }
   }
 }
