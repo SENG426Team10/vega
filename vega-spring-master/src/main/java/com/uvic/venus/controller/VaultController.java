@@ -62,4 +62,11 @@ public class VaultController {
         secretInfoDAO.save(secret);
         return ResponseEntity.ok("Secret Saved Successfully");
     }
+
+    @PostMapping(value = "/deletesecret")
+    public ResponseEntity<?> deleteSecret(@RequestBody SecretInfo secret){
+        System.out.println("Imma delete dis");
+        secretInfoDAO.delete(secret);
+        return ResponseEntity.ok("Secret Deleted Successfully");
+    }
 }
