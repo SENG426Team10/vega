@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS secrets (
     secretname VARCHAR(50) NOT NULL,
     createddate VARCHAR(50) NOT NULL,
     secretdata VARCHAR(50) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY (username, secretname)
 );
 -- CREATE UNIQUE  INDEX ix_auth_username on authorities (username,authority);
