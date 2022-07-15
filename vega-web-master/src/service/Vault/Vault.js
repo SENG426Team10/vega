@@ -12,3 +12,7 @@ export function fetchUserSecrets(username, token) {
 export function uploadSecret(secretInfo, token) {
 	return doPost("http://localhost:8000/api/venus/vault/uploadsecret", secretInfo, token)
 }
+
+export function deleteSecret(secretInfo, token) {
+	return doPost("http://localhost:8000/api/venus/vault/deletesecret", secretInfo, token)
+}

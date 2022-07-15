@@ -2,43 +2,35 @@ import { useContext, useState, useEffect } from 'react';
 import { Row, Col, Table, Button, Form, Modal } from 'react-bootstrap';
 import SimplePageLayout from '../templates/SimplePageLayout.js';
 import { UserContext } from '../../auth/UserProvider.js';
-import { fetchAllSecrets, uploadSecret } from '../../service/Vault/Vault.js';
+import { fetchAllSecrets, fetchUserSecrets, uploadSecret, deleteSecret } from '../../service/Vault/Vault.js';
+import FormModalButton from '../UI/molecules/FormModalButton.js';
 
 const Vault = (props) => {
-	const { user, setUserInfo, logout } = useContext(UserContext);
-	const [show, setShow] = useState(false);
+	const { user } = useContext(UserContext);
+	const [username, setUsername] = useState('');
 	const [name, setName] = useState('');
 	const [secret, setSecret] = useState(null);
 	const [listOfSecrets, setSecrets] = useState([]);
-	const [isNewData, setNewDataFlag] = useState(false);
 
-	// For now-defunct database integration
-	//useEffect(() => {
-	//	console.log("Inside useEffect")
-	//	fetchAllSecrets(user.jwt)
-	//		.then(resp => {
-	//			setSecrets(resp)
-	//		});
-
-
-	//}, [user]);
-
-	useEffect(() => {
-		if (isNewData) {
-			const json = JSON.stringify(listOfSecrets);
-			window.localStorage.setItem("listofSecrets", json);
-			setNewDataFlag(false);
-        }
-		
-	}, [isNewData]);
-
-	useEffect(() => {
-		const json = window.localStorage.getItem("listofSecrets");
-		const savedSecrets = JSON.parse(json);
-		if (savedSecrets) {
-			setSecrets(savedSecrets);
+	const loadSecrets = () => {
+		if(user.role == "ROLE_ADMIN"){
+			fetchAllSecrets(user.jwt)
+				.then(resp => {
+					setSecrets(resp)
+				});
+		}else{
+			fetchUserSecrets(user.username, user.jwt)
+				.then(resp => {
+					setSecrets(resp)
+				});
 		}
-	}, []);
+	};
+
+	useEffect(() => {
+		console.log("Inside useEffect")
+		loadSecrets();
+
+	}, [user]);
 
 	const addSecret = (name_, secret_) => {
 		const secretInfo = {
@@ -48,95 +40,128 @@ const Vault = (props) => {
 			secretData: secret_
 		};
 
-		// For now-defunct database integration
-		// uploadSecret(secretInfo, user.jwt);
-
-		setSecrets(prevList => {
-			return [...prevList, secretInfo]
-		});
+		uploadSecret(secretInfo, user.jwt)
+			.then(() => {loadSecrets()});
 
 		console.log("Added " + name_ + ":" + secret_);
 	}
 
-	const addSecretForm = () => {		
-
-		const nameChangeHandler = (event) => {
-			setName(event.target.value);
-        }
-
-		const secretChangeHandler = (event) => {
-			setSecret(event.target.value);
-		}
-
-		const submitHandler = (event) => {
-			event.preventDefault();
-
-			addSecret(name, secret);
-			setNewDataFlag(true);
-			setName("");
-			setSecret("");
-			setShow(false);
-        }
-
+	const shareSecretForm = () => {
 		return (
-			<Form onSubmit={submitHandler}>
+			<>
 				<Form.Group>
-					<Form.Label>Secret Name</Form.Label>
-					<Form.Control type="text" onChange={nameChangeHandler} placeholder="Enter a name for your secret" />
+					<Form.Label>Transfer to:</Form.Label>
+					<Form.Control type="text" onChange={(event) => {setUsername(event.target.value)}} placeholder="Username" />
 				</Form.Group>
-				<Form.Group>
-					<Form.Label>Secret</Form.Label>
-					<Form.Control type="text" onChange={secretChangeHandler}/>
-				</Form.Group>
+				<br/>
 				<Button variant="primary" type="submit">
 					Submit
 				</Button>
-			</Form>
-		);
-    }
-		
-	const addButton = () => {
-		const handleClose = () => setShow(false);
-		const handleShow = () => setShow(true);
-
-		return (
-			<>
-				<Button onClick={handleShow}>
-					Add Secret
-				</Button>
-
-				<Modal show={show} onHide={handleClose}>
-					<Modal.Header closeButton>
-						<Modal.Title>Add New Secret</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						{addSecretForm()}
-					</Modal.Body>
-				</Modal>
 			</>
 		);
-	}
+    }
 
-	const shareSecret = () => {
+	const shareSecret = (oldSecret, username_) => {
+		console.log("Sharing secret");
+		const secretInfo = {
+			username: username_,
+			secretName: oldSecret.secretName,
+			createdDate: oldSecret.createdDate,
+			secretData: oldSecret.secretData
+		};
+
+		deleteSecret(oldSecret, user.jwt)
+			.then(() => {uploadSecret(secretInfo, user.jwt)
+			.then(() => {loadSecrets();
+			})});
+
 		console.log("Shared");
 	}
 
-	const updateSecret = () => {
+	const updateSecret = (oldSecret, name_, secret_) => {
+		console.log("Updating secret");
+		const secretInfo = {
+			username: oldSecret.username,
+			secretName: name_,
+			createdDate: oldSecret.createdDate,
+			secretData: secret_
+		};
+
+		deleteSecret(oldSecret, user.jwt)
+			.then(() => {uploadSecret(secretInfo, user.jwt)
+			.then(() => {loadSecrets();
+			})});
+
+		
 		console.log("Updated");
 	}
 
-	const deleteSecret = () => {
+	const handleDeleteSecret = (record) => {
+		console.log("Deleting secret");
+		console.log(record);
+		deleteSecret(record, user.jwt);
+
+		setSecrets(prevList => {
+			return prevList.filter(secret => secret.id !== record.id);
+		});
 		console.log("Deleted");
 	}
 
-	const shareButton = <Button onClick={shareSecret} size="sm">Share</Button>;
-	const updateButton = <Button onClick={updateSecret} size="sm">Update</Button>;
-	const deleteButton = <Button onClick={deleteSecret} size="sm">Delete</Button>;
+	const shareButton = (record) => {
+		return <FormModalButton 
+			buttonLabel="Transfer" 
+			modalTitle="Transfer Secret Ownership"
+			formBody={shareSecretForm()} 
+			submitEvent={() => {
+				shareSecret(record, username);
+				setUsername("");
+			}}
+			size="sm"/>;
+	};
+	const updateButton = (record) => {
+		return <FormModalButton 
+			buttonLabel="Update" 
+			modalTitle="Update Secret"
+			formBody={addSecretForm()} 
+			submitEvent={() => {
+				updateSecret(record, name, secret);
+				setName("");
+				setSecret("");
+			}}
+			size="sm"/>;
+	};
+	const deleteButton = (record) => {return <Button onClick={() => handleDeleteSecret(record)} size="sm">Delete</Button>};
 
 	const listOfSecretsHTML = () => {
 		if (listOfSecrets.length) {
-			return listOfSecrets.map((record) => <tr><td>{record.username}</td><td>{record.secretName}</td><td>{record.createdDate}</td><td>{record.secretData}</td><td>{shareButton}</td><td>{updateButton}</td><td>{deleteButton}</td></tr>);
+			return listOfSecrets.map((record) => <tr>
+				<td>{record.username}</td>
+				<td>{record.secretName}</td>
+				<td>{record.createdDate}</td>
+				<td>{record.secretData}</td>
+				<td>{shareButton(record)}</td>
+				<td>{updateButton(record)}</td>
+				<td>{deleteButton(record)}</td></tr>);
 		}
+    }
+
+	const addSecretForm = () => {
+		return (
+			<>
+				<Form.Group>
+					<Form.Label>Secret Name</Form.Label>
+					<Form.Control type="text" onChange={(event) => {setName(event.target.value)}} placeholder="Enter a name for your secret" />
+				</Form.Group>
+				<Form.Group>
+					<Form.Label>Secret</Form.Label>
+					<Form.Control type="text" onChange={(event) => {setSecret(event.target.value)}}/>
+				</Form.Group>
+				<br/>
+				<Button variant="primary" type="submit">
+					Submit
+				</Button>
+			</>
+		);
     }
 
 	return (
@@ -166,7 +191,15 @@ const Vault = (props) => {
 			</Row>
 			<Row>
 				<div className="text-center">
-					{addButton()}
+					<FormModalButton 
+						buttonLabel="Add Secret" 
+						modalTitle="Add New Secret"
+						formBody={addSecretForm()} 
+						submitEvent={() => {
+							addSecret(name, secret);
+							setName("");
+							setSecret("");
+        				}}/>
 				</div>
 			</Row>
 		</SimplePageLayout>

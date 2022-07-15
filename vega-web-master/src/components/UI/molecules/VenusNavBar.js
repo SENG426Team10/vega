@@ -8,10 +8,12 @@ const VenusNavBar = (props) => {
 	var logout;
   var resources;
   var adminpanel;
+  var vault;
 
   if(user.username && user.jwt){
     console.log(user);
     logout = <Nav.Link href="/account">Logout</Nav.Link>;
+    vault = <Nav.Link href="/vault">Vault</Nav.Link>
   } else{
     logout = <Nav.Link href="/login">Login/SignUp</Nav.Link>;
   }
@@ -32,7 +34,7 @@ const VenusNavBar = (props) => {
         				<Nav.Link href="/news">News & Events</Nav.Link>
         				<Nav.Link href="/leadership">Leadership</Nav.Link>
                   {resources}
-                  <Nav.Link href="/vault">Vault</Nav.Link>
+                  {vault}
         				<Nav.Link href="/aboutus">About us</Nav.Link>
         				<Nav.Link href="/contactus">Contact us</Nav.Link>
               <Nav.Item className="float-right">

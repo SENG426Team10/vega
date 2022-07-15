@@ -37,8 +37,8 @@ function App() {
           <Route path="/account" component={UserAccount} />
           <Route path="/resources" component={Resources} />
           <Route path="/adminpanel" component={AdminPanel} />
-              <Route path="/aboutus" component={AboutUs} />
-              <Route path="/vault" component={Vault} />
+          <Route path="/aboutus" component={AboutUs} />
+          <Route path="/vault" component={Vault} />
         </Switch>
     </UserProvider>
   );
