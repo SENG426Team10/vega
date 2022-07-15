@@ -2,10 +2,10 @@ import { useContext, useState, useEffect } from 'react';
 import { Row, Col, Table, Button, Form, Modal } from 'react-bootstrap';
 import SimplePageLayout from '../templates/SimplePageLayout.js';
 import { UserContext } from '../../auth/UserProvider.js';
-import { fetchAllSecrets, uploadSecret } from '../../service/Vault/Vault.js';
+import { fetchAllSecrets, fetchUserSecrets, uploadSecret } from '../../service/Vault/Vault.js';
 
 const Vault = (props) => {
-	const { user, setUserInfo, logout } = useContext(UserContext);
+	const { user } = useContext(UserContext);
 	const [show, setShow] = useState(false);
 	const [name, setName] = useState('');
 	const [secret, setSecret] = useState(null);
@@ -13,32 +13,38 @@ const Vault = (props) => {
 	const [isNewData, setNewDataFlag] = useState(false);
 
 	// For now-defunct database integration
-	//useEffect(() => {
-	//	console.log("Inside useEffect")
-	//	fetchAllSecrets(user.jwt)
-	//		.then(resp => {
-	//			setSecrets(resp)
-	//		});
-
-
-	//}, [user]);
-
 	useEffect(() => {
-		if (isNewData) {
-			const json = JSON.stringify(listOfSecrets);
-			window.localStorage.setItem("listofSecrets", json);
-			setNewDataFlag(false);
-        }
+		console.log("Inside useEffect")
+		if(user.role == "ROLE_ADMIN"){
+			fetchAllSecrets(user.jwt)
+				.then(resp => {
+					setSecrets(resp)
+				});
+		}else{
+			fetchUserSecrets(user.username, user.jwt)
+				.then(resp => {
+					setSecrets(resp)
+				});
+		} 
+
+	}, [user]);
+
+	// useEffect(() => {
+	// 	if (isNewData) {
+	// 		const json = JSON.stringify(listOfSecrets);
+	// 		window.localStorage.setItem("listofSecrets", json);
+	// 		setNewDataFlag(false);
+    //     }
 		
-	}, [isNewData]);
+	// }, [isNewData]);
 
-	useEffect(() => {
-		const json = window.localStorage.getItem("listofSecrets");
-		const savedSecrets = JSON.parse(json);
-		if (savedSecrets) {
-			setSecrets(savedSecrets);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	const json = window.localStorage.getItem("listofSecrets");
+	// 	const savedSecrets = JSON.parse(json);
+	// 	if (savedSecrets) {
+	// 		setSecrets(savedSecrets);
+	// 	}
+	// }, []);
 
 	const addSecret = (name_, secret_) => {
 		const secretInfo = {
@@ -49,7 +55,7 @@ const Vault = (props) => {
 		};
 
 		// For now-defunct database integration
-		// uploadSecret(secretInfo, user.jwt);
+		uploadSecret(secretInfo, user.jwt);
 
 		setSecrets(prevList => {
 			return [...prevList, secretInfo]
@@ -88,6 +94,7 @@ const Vault = (props) => {
 					<Form.Label>Secret</Form.Label>
 					<Form.Control type="text" onChange={secretChangeHandler}/>
 				</Form.Group>
+				<br/>
 				<Button variant="primary" type="submit">
 					Submit
 				</Button>
@@ -117,25 +124,32 @@ const Vault = (props) => {
 		);
 	}
 
-	const shareSecret = () => {
+	const shareSecret = (name) => {
 		console.log("Shared");
 	}
 
-	const updateSecret = () => {
+	const updateSecret = (name) => {
 		console.log("Updated");
 	}
 
-	const deleteSecret = () => {
+	const deleteSecret = (name) => {
 		console.log("Deleted");
 	}
 
-	const shareButton = <Button onClick={shareSecret} size="sm">Share</Button>;
-	const updateButton = <Button onClick={updateSecret} size="sm">Update</Button>;
-	const deleteButton = <Button onClick={deleteSecret} size="sm">Delete</Button>;
+	const shareButton = (name) => {return <Button onClick={() => shareSecret(name)} size="sm">Share</Button>};
+	const updateButton = (name) => {return <Button onClick={() => updateSecret(name)} size="sm">Update</Button>};
+	const deleteButton = (name) => {return <Button onClick={() => deleteSecret(name)} size="sm">Delete</Button>};
 
 	const listOfSecretsHTML = () => {
 		if (listOfSecrets.length) {
-			return listOfSecrets.map((record) => <tr><td>{record.username}</td><td>{record.secretName}</td><td>{record.createdDate}</td><td>{record.secretData}</td><td>{shareButton}</td><td>{updateButton}</td><td>{deleteButton}</td></tr>);
+			return listOfSecrets.map((record) => <tr>
+				<td>{record.username}</td>
+				<td>{record.secretName}</td>
+				<td>{record.createdDate}</td>
+				<td>{record.secretData}</td>
+				<td>{shareButton(record.secretName)}</td>
+				<td>{updateButton(record.secretName)}</td>
+				<td>{deleteButton(record.secretName)}</td></tr>);
 		}
     }
 
