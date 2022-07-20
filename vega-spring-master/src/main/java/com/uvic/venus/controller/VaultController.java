@@ -59,8 +59,8 @@ public class VaultController {
 
     @PostMapping(value = "/uploadsecret")
     public ResponseEntity<?> uploadSecret(@RequestBody SecretInfo secret){
-        secretInfoDAO.save(secret);
-        return ResponseEntity.ok("Secret Saved Successfully");
+        SecretInfo saved = secretInfoDAO.save(secret);
+        return ResponseEntity.ok(saved);
     }
 
     @PostMapping(value = "/deletesecret")
