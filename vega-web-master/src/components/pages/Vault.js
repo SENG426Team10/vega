@@ -34,6 +34,7 @@ const Vault = (props) => {
 
 	const addSecret = (name_, secret_) => {
 		const secretInfo = {
+			id: null,
 			username: user.username,
 			secretName: name_,
 			createdDate: new Date().toLocaleDateString(),
@@ -64,6 +65,7 @@ const Vault = (props) => {
 	const shareSecret = (oldSecret, username_) => {
 		console.log("Sharing secret");
 		const secretInfo = {
+			id: null,
 			username: username_,
 			secretName: oldSecret.secretName,
 			createdDate: oldSecret.createdDate,
@@ -81,6 +83,7 @@ const Vault = (props) => {
 	const updateSecret = (oldSecret, name_, secret_) => {
 		console.log("Updating secret");
 		const secretInfo = {
+			id: null,
 			username: oldSecret.username,
 			secretName: name_,
 			createdDate: oldSecret.createdDate,
@@ -99,11 +102,8 @@ const Vault = (props) => {
 	const handleDeleteSecret = (record) => {
 		console.log("Deleting secret");
 		console.log(record);
-		deleteSecret(record, user.jwt);
-
-		setSecrets(prevList => {
-			return prevList.filter(secret => secret.id !== record.id);
-		});
+		deleteSecret(record, user.jwt)
+			.then(() => { loadSecrets() });
 		console.log("Deleted");
 	}
 
