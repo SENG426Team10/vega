@@ -2,6 +2,7 @@ import express from 'express';
 import { deleteSecret, fetchAllSecrets, fetchUserSecrets, uploadSecret } from '../services/VaultAPI.js';
 
 let router = express();
+router.disable('x-powered-by');
 
 // router.use(bodyParser.json({ 'limit': '20mb' }));
 
