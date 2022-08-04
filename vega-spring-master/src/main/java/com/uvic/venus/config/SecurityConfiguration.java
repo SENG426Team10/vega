@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
@@ -27,7 +26,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
-                .dataSource(dataSource);
+                .dataSource(dataSource)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf()
                 .disable()
-                .authorizeRequests().antMatchers("/authenticate", "/register", "/vault/**")
+                .authorizeRequests().antMatchers("/authenticate", "/register")
                 .permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/files/**").hasAnyRole("ADMIN", "STAFF")
@@ -57,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
