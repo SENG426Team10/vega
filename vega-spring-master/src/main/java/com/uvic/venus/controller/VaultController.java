@@ -1,6 +1,7 @@
 package com.uvic.venus.controller;
 
 import com.uvic.venus.model.SecretInfo;
+import com.uvic.venus.model.SecretInfoDTO;
 import com.uvic.venus.repository.SecretInfoDAO;
 import com.uvic.venus.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,15 +59,17 @@ public class VaultController {
     }
 
     @PostMapping(value = "/uploadsecret")
-    public ResponseEntity<?> uploadSecret(@RequestBody SecretInfo secret){
-        SecretInfo saved = secretInfoDAO.save(secret);
+    public ResponseEntity<?> uploadSecret(@RequestBody SecretInfoDTO secret){
+        SecretInfo persistentSecret = new SecretInfo(secret.username, secret.secretName, secret.createdDate, secret.secretData);
+        SecretInfo saved = secretInfoDAO.save(persistentSecret);
         return ResponseEntity.ok(saved);
     }
 
     @PostMapping(value = "/deletesecret")
-    public ResponseEntity<?> deleteSecret(@RequestBody SecretInfo secret){
-        System.out.println("Imma delete dis");
-        secretInfoDAO.delete(secret);
+    public ResponseEntity<?> deleteSecret(@RequestBody SecretInfoDTO secret){
+        SecretInfo persistentSecret = new SecretInfo(secret.username, secret.secretName, secret.createdDate, secret.secretData);
+        persistentSecret.setId(secret.id);
+        secretInfoDAO.delete(persistentSecret);
         return ResponseEntity.ok("Secret Deleted Successfully");
     }
 }
