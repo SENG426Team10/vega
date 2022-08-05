@@ -17,7 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +44,7 @@ public class LoginController {
     JwtUtil jwtUtil;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     UserInfoDAO userInfoDAO;

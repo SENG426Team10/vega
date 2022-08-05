@@ -2,7 +2,7 @@
 -- database root/pass
 INSERT INTO users (username, password, enabled) values
     ('admin@venus.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a',1),
-    ('paulaguilar@venus.com', '$2a$10$57HgFrJ3eD2N0L01cPltIeUxl0gC/yRzEHP0AySGLp8HE8GX6NuCe',1),
+    ('paulaguilar@venus.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a',1),
     ('jonoliver@venus.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a',1),
     ('claudinezhang@venus.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a',1),
     ('lovelinkumar@venus.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a',1),
@@ -11,8 +11,6 @@ INSERT INTO users (username, password, enabled) values
     ('brijeshgupta@venus.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a',1),
     ('amyfofana@venus.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a',1),
     ('testuser@venus.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 1);
-
-
 
 INSERT INTO authorities (username, authority) values
     ('admin@venus.com', 'ROLE_ADMIN'),
@@ -25,6 +23,8 @@ INSERT INTO authorities (username, authority) values
     ('brijeshgupta@venus.com', 'ROLE_STAFF'),
     ('amyfofana@venus.com', 'ROLE_STAFF'),
     ('testuser@venus.com', 'ROLE_USER');
+
+
 
 INSERT INTO userinfo (username, firstname, lastname) values
     ('admin@venus.com', 'admin' , 'admin'),
@@ -39,6 +39,13 @@ INSERT INTO userinfo (username, firstname, lastname) values
     ('testuser@venus.com', 'testuser', 'testuser');
 
 INSERT INTO secrets (username, secretname, createddate, secretdata) values
-    ('admin@venus.com', 'secret1', '01/01/1999', 'test1'),
-    ('admin@venus.com', 'secret2', '01/01/1999', 'test2'),
-    ('admin@venus.com', 'secret3', '01/01/1999', 'test3');
+    ('admin@venus.com', '1', '01/01/1999', '1'),
+    ('paulaguilar@venus.com', '2', '01/01/1999', '2'),
+    ('jonoliver@venus.com', '3', '01/01/1999', '3'),
+    ('claudinezhang@venus.com', '4', '01/01/1999', '4'),
+    ('lovelinkumar@venus.com', '5', '01/01/1999', '5'),
+    ('michelkouame@venus.com', '6', '01/01/1999', '6'),
+    ('angelinacosta@venus.com', '7', '01/01/1999', '7'),
+    ('brijeshgupta@venus.com', '8', '01/01/1999', '8'),
+    ('amyfofana@venus.com', '9', '01/01/1999', '9'),
+    ('testuser@venus.com', '10', '01/01/1999', '10');

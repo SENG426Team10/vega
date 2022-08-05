@@ -1,17 +1,19 @@
 package com.uvic.venus.controller;
 
 import com.uvic.venus.model.SecretInfo;
+import com.uvic.venus.model.SecretInfoDTO;
 import com.uvic.venus.repository.SecretInfoDAO;
 import com.uvic.venus.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Example;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,9 +50,26 @@ public class VaultController {
         return ResponseEntity.ok(secretInfoList);
     }
 
+    @GetMapping(value = "/getusersecrets")
+    @ResponseBody
+    public ResponseEntity<?> getUserSecrets(@RequestParam("username") String username){
+        SecretInfo probe = new SecretInfo( username, null, null, null);
+        List<SecretInfo> secretInfoList = secretInfoDAO.findAll(Example.of(probe));
+        return ResponseEntity.ok(secretInfoList);
+    }
+
     @PostMapping(value = "/uploadsecret")
-    public ResponseEntity<?> uploadSecret(@RequestBody SecretInfo secret){
-        secretInfoDAO.save(secret);
-        return ResponseEntity.ok("Secret Saved Successfully");
+    public ResponseEntity<?> uploadSecret(@RequestBody SecretInfoDTO secret){
+        SecretInfo persistentSecret = new SecretInfo(secret.username, secret.secretName, secret.createdDate, secret.secretData);
+        SecretInfo saved = secretInfoDAO.save(persistentSecret);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping(value = "/deletesecret")
+    public ResponseEntity<?> deleteSecret(@RequestBody SecretInfoDTO secret){
+        SecretInfo persistentSecret = new SecretInfo(secret.username, secret.secretName, secret.createdDate, secret.secretData);
+        persistentSecret.setId(secret.id);
+        secretInfoDAO.delete(persistentSecret);
+        return ResponseEntity.ok("Secret Deleted Successfully");
     }
 }
