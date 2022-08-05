@@ -5,10 +5,8 @@ import {login} from '../services/LoginRequestAPI.js';
 function authModule(req, res) {
 	if (req.method == 'POST') {
     	const userInfo = req.body;
-    	console.log(userInfo);
     	login(`http://${process.env.API_URL}/venus/authenticate`, userInfo)
     		.then(response => {
-    			console.log("Response", response);
     			res.send(response);
     		})
     		.catch(error => {
